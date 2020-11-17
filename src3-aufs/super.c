@@ -43,6 +43,8 @@ static int aufs_fill_sb(struct super_block *sb, void *data, int silent)
         return -ENOMEM;
     }
 
+    pr_debug("aufs sb is filled\n");
+
     return 0;
 }
 
