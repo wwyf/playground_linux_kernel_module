@@ -8,7 +8,7 @@ MODULE_AUTHOR("Robert W. Oliver II");
 MODULE_DESCRIPTION("A simple example Linux module.");
 MODULE_VERSION("0.01");
 #define DEVICE_NAME "lkm_example"
-#define EXAMPLE_MSG "Hello, World!n"
+#define EXAMPLE_MSG "Hello, World!\n"
 #define MSG_BUFFER_LEN 15
 /* Prototypes for device functions */
 static int device_open(struct inode *, struct file *);

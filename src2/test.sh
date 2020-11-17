@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -xe
+
 DEVICE_NUM=242
 
 sudo mknod /dev/lkm_example c ${DEVICE_NUM} 0
