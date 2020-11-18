@@ -4,6 +4,7 @@
 #include <linux/kernel.h>   
 #include <linux/proc_fs.h>
 #include <asm/uaccess.h>
+#include <linux/uaccess.h>
 #define BUFSIZE  100
  
  
@@ -18,13 +19,31 @@ static ssize_t mywrite(struct file *file, const char __user *ubuf,size_t count, 
 	printk( KERN_DEBUG "write handler\n");
 	return -1;
 }
+
+
+static int irq=20;
+module_param(irq,int,0660);
+ 
+static int mode=1;
+module_param(mode,int,0660);
+ 
  
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
 {
+	char buf[BUFSIZE];
+	int len=0;
 	printk( KERN_DEBUG "read handler\n");
-	return 0;
+	if(*ppos > 0 || count < BUFSIZE)
+		return 0;
+	len += sprintf(buf,"irq = %d\n",irq);
+	len += sprintf(buf + len,"mode = %d\n",mode);
+	
+	if(copy_to_user(ubuf,buf,len))
+		return -EFAULT;
+	*ppos = len;
+	return len;
 }
- 
+
 static struct file_operations myops = 
 {
 	.owner = THIS_MODULE,
