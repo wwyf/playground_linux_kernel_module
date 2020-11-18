@@ -14,11 +14,6 @@ MODULE_AUTHOR("Liran B.H");
  
 static struct proc_dir_entry *ent;
  
-static ssize_t mywrite(struct file *file, const char __user *ubuf,size_t count, loff_t *ppos) 
-{
-	printk( KERN_DEBUG "write handler\n");
-	return -1;
-}
 
 
 static int irq=20;
@@ -26,6 +21,25 @@ module_param(irq,int,0660);
  
 static int mode=1;
 module_param(mode,int,0660);
+
+static ssize_t mywrite(struct file *file, const char __user *ubuf,size_t count, loff_t *ppos) 
+{
+	int num,c,i,m;
+	char buf[BUFSIZE];
+	if(*ppos > 0 || count > BUFSIZE)
+		return -EFAULT;
+	if(copy_from_user(buf,ubuf,count))
+		return -EFAULT;
+	num = sscanf(buf,"%d %d",&i,&m);
+	if(num != 2)
+		return -EFAULT;
+	irq = i; 
+	mode = m;
+	c = strlen(buf);
+	*ppos = c;
+	return c;
+}
+
  
  
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
@@ -33,6 +47,7 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 	char buf[BUFSIZE];
 	int len=0;
 	printk( KERN_DEBUG "read handler\n");
+    // We check if this is the first time we call read (pos=0) and the user buffer size is bigger than BUFSIZE , otherwise we return 0 (end of file)
 	if(*ppos > 0 || count < BUFSIZE)
 		return 0;
 	len += sprintf(buf,"irq = %d\n",irq);

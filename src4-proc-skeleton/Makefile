@@ -16,7 +16,7 @@ test:
 	-cat /proc/modules | grep myproc
 	sudo insmod myproc.ko irq=32 mode=4
 	-cat /proc/modules | grep myproc
-	-sudo echo "test" > /proc/mydev
+	-sudo echo "66 6" > /proc/mydev
 	-sudo cat /proc/mydev
 	sudo rmmod myproc.ko
 	dmesg
