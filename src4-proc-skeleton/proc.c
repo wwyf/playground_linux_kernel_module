@@ -26,6 +26,8 @@ static ssize_t mywrite(struct file *file, const char __user *ubuf,size_t count, 
 {
 	int num,c,i,m;
 	char buf[BUFSIZE];
+
+	printk( KERN_DEBUG "write handler\n");
 	if(*ppos > 0 || count > BUFSIZE)
 		return -EFAULT;
 	if(copy_from_user(buf,ubuf,count))
@@ -52,6 +54,8 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 		return 0;
 	len += sprintf(buf,"irq = %d\n",irq);
 	len += sprintf(buf + len,"mode = %d\n",mode);
+	len += sprintf(buf + len,"1");
+    buf[len-1] = 0;
 	
 	if(copy_to_user(ubuf,buf,len))
 		return -EFAULT;
